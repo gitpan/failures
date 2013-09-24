@@ -14,6 +14,7 @@ my @modules = qw(
   Class::Tiny
   Exporter
   ExtUtils::MakeMaker
+  File::Spec
   File::Spec::Functions
   File::Temp
   IO::Handle

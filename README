@@ -2,7 +2,7 @@ NAME
     failures - Minimalist exception hierarchy generator
 
 VERSION
-    version 0.001
+    version 0.002
 
 SYNOPSIS
         use failures qw/io::file io::network/;

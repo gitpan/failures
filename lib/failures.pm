@@ -4,7 +4,7 @@ use warnings;
 
 package failures;
 # ABSTRACT: Minimalist exception hierarchy generator
-our $VERSION = '0.001'; # VERSION
+our $VERSION = '0.002'; # VERSION
 
 sub import {
     no strict 'refs';
@@ -19,11 +19,11 @@ sub import {
         # XXX should check $f for valid package name
         my $custom  = $caller;
         my $default = 'failure';
-        push @{"$custom\::ISA"}, $default if $class eq 'custom::failures';
+        push @{"$custom\::ISA"}, $default if $is_custom;
         for my $p ( split /::/, $f ) {
             push @{"$default\::$p\::ISA"}, $default;
             $default .= "::$p";
-            if ( $class eq 'custom::failures' ) {
+            if ($is_custom) {
                 push @{"$custom\::$p\::ISA"}, $custom, $default;
                 $custom .= "::$p";
             }
@@ -46,7 +46,7 @@ sub throw {
 sub message {
     my ( $self, $msg ) = @_;
     my $intro = "Caught @{[ref $self]} error";
-    return length($msg) ? "$intro: $msg" : $intro;
+    return defined($msg) && length($msg) ? "$intro: $msg" : $intro;
 }
 
 sub as_string {
@@ -88,7 +88,7 @@ failures - Minimalist exception hierarchy generator
 
 =head1 VERSION
 
-version 0.001
+version 0.002
 
 =head1 SYNOPSIS
 

@@ -4,7 +4,7 @@ use warnings;
 
 package custom::failures;
 # ABSTRACT: Minimalist, customized exception hierarchy generator
-our $VERSION = '0.001'; # VERSION
+our $VERSION = '0.002'; # VERSION
 
 use parent 'failures';
 
@@ -25,7 +25,7 @@ custom::failures - Minimalist, customized exception hierarchy generator
 
 =head1 VERSION
 
-version 0.001
+version 0.002
 
 =head1 SYNOPSIS
 
