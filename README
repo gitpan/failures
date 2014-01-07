@@ -2,7 +2,7 @@ NAME
     failures - Minimalist exception hierarchy generator
 
 VERSION
-    version 0.002
+    version 0.003
 
 SYNOPSIS
         use failures qw/io::file io::network/;
@@ -68,20 +68,25 @@ USAGE
     Subclasses inherit, so "failure::foo::bar" is-a "failure::foo" and
     "failure::foo" is-a "failure".
 
+  Attributes
+    A failure class has three attributes: "msg", "payload", and "trace".
+    Their usage is described below. Accessors exist for all three.
+
   Throwing failures
     The "throw" method of a failure class takes a single, optional argument
     that modifies how failure objects are stringified.
 
-    If no argument is given, a default message is generated:
+    If no argument is given, a default message is generated if the object is
+    stringified:
 
         say failure::foo::bar->throw;
-        # Caught failure::foo::bar error
+        # Caught failure::foo::bar
 
-    With a single, non-hash-reference argument, the argument is appended as
-    a string:
+    With a single, non-hash-reference argument, the argument is used for the
+    "msg" attribute and is appended if the object is stringified.
 
         say failure::foo::bar->throw("Ouch!");
-        # Caught failure::foo::bar error: Ouch!
+        # Caught failure::foo::bar: Ouch!
 
     With a hash reference argument, the "msg" key provides the string to
     append to the default error. If you have extra data to attach to the
@@ -92,16 +97,16 @@ USAGE
             payload => $extra_data,
         });
 
-    If an optional "trace" key is provided, it is appended as a string. To
-    loosely emulate "die" and provide a simple filename and line number, use
-    the "failure->line_trace" class method:
+    If an optional "trace" key is provided, it is appended if the object is
+    stringified. To loosely emulate "die" and provide a simple filename and
+    line number, use the "failure->line_trace" class method:
 
         failure::foo::bar->throw({
             msg => "Ouch!",
             trace => failure->line_trace,
         });
 
-        # Caught failure::foo::bar error: Ouch!
+        # Caught failure::foo::bar: Ouch!
         #
         # Failure caught at <FILENAME> line <NUMBER>
 
@@ -113,7 +118,7 @@ USAGE
             trace => failure->croak_trace,
         });
 
-        # Caught failure::foo::bar error: Ouch!
+        # Caught failure::foo::bar: Ouch!
         #
         # Failure caught at <CALLING-FILENAME> line <NUMBER>
 
@@ -122,7 +127,7 @@ USAGE
             trace => failure->confess_trace,
         });
 
-        # Caught failure::foo::bar error: Ouch!
+        # Caught failure::foo::bar: Ouch!
         #
         # Failure caught at <FILENAME> line <NUMBER>
         #   [confess stack trace continues]
@@ -135,7 +140,7 @@ USAGE
             trace => Devel::StackTrace->new,
         });
 
-        # Caught failure::foo::bar error: Ouch!
+        # Caught failure::foo::bar: Ouch!
         #
         # [stringified Devel::StackTrace object]
 

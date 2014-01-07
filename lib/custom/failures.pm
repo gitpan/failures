@@ -4,7 +4,7 @@ use warnings;
 
 package custom::failures;
 # ABSTRACT: Minimalist, customized exception hierarchy generator
-our $VERSION = '0.002'; # VERSION
+our $VERSION = '0.003'; # VERSION
 
 use parent 'failures';
 
@@ -17,7 +17,7 @@ __END__
 
 =pod
 
-=encoding utf-8
+=encoding UTF-8
 
 =head1 NAME
 
@@ -25,7 +25,7 @@ custom::failures - Minimalist, customized exception hierarchy generator
 
 =head1 VERSION
 
-version 0.002
+version 0.003
 
 =head1 SYNOPSIS
 
@@ -61,8 +61,6 @@ throw
 =back
 
 Both are described further, below.
-
-=for Pod::Coverage throw message as_string
 
 =head1 USAGE
 
@@ -137,7 +135,7 @@ returns a string.  It should not produce or append stack trace information.
 That is done during object stringification.
 
 Call C<SUPER::message> if you want the standard error text prepended (C<"Caught
-$class error: ...">).
+$class: ...">).
 
 For example, if you want to use L<String::Flogger> to render messages:
 
@@ -209,6 +207,8 @@ logs exceptions as they are built:
 
 By using C<message> instead of stringifying C<$self>, we
 log the message but not the trace (if any).
+
+=for Pod::Coverage throw message as_string
 
 =head1 AUTHOR
 

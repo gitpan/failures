@@ -4,7 +4,7 @@ use warnings;
 
 package failures;
 # ABSTRACT: Minimalist exception hierarchy generator
-our $VERSION = '0.002'; # VERSION
+our $VERSION = '0.003'; # VERSION
 
 sub import {
     no strict 'refs';
@@ -45,7 +45,7 @@ sub throw {
 
 sub message {
     my ( $self, $msg ) = @_;
-    my $intro = "Caught @{[ref $self]} error";
+    my $intro = "Caught @{[ref $self]}";
     return defined($msg) && length($msg) ? "$intro: $msg" : $intro;
 }
 
@@ -80,7 +80,7 @@ __END__
 
 =pod
 
-=encoding utf-8
+=encoding UTF-8
 
 =head1 NAME
 
@@ -88,7 +88,7 @@ failures - Minimalist exception hierarchy generator
 
 =head1 VERSION
 
-version 0.002
+version 0.003
 
 =head1 SYNOPSIS
 
@@ -155,8 +155,6 @@ Failure objects are implemented with L<Class::Tiny> to allow easy subclassing
 (see L<custom::failures>), but C<Class::Tiny> only requires core modules, so
 other than that exception, the 'core only' goal is achieved.
 
-=for Pod::Coverage throw message as_string
-
 =head1 USAGE
 
 =head2 Defining failure categories
@@ -188,20 +186,27 @@ C<failure::foo::baz>
 Subclasses inherit, so C<failure::foo::bar> is-a C<failure::foo> and
 C<failure::foo> is-a C<failure>.
 
+=head2 Attributes
+
+A failure class has three attributes: C<msg>, C<payload>, and C<trace>.  Their
+usage is described below.  Accessors exist for all three.
+
 =head2 Throwing failures
 
 The C<throw> method of a failure class takes a single, optional argument
 that modifies how failure objects are stringified.
 
-If no argument is given, a default message is generated:
+If no argument is given, a default message is generated if the object
+is stringified:
 
     say failure::foo::bar->throw;
-    # Caught failure::foo::bar error
+    # Caught failure::foo::bar
 
-With a single, non-hash-reference argument, the argument is appended as a string:
+With a single, non-hash-reference argument, the argument is used for the C<msg>
+attribute and is appended if the object is stringified.
 
     say failure::foo::bar->throw("Ouch!");
-    # Caught failure::foo::bar error: Ouch!
+    # Caught failure::foo::bar: Ouch!
 
 With a hash reference argument, the C<msg> key provides the string to append to
 the default error.  If you have extra data to attach to the exception, use the
@@ -212,16 +217,16 @@ C<payload> key:
         payload => $extra_data,
     });
 
-If an optional C<trace> key is provided, it is appended as a string.  To
-loosely emulate C<die> and provide a simple filename and line number, use the
-C<< failure->line_trace >> class method:
+If an optional C<trace> key is provided, it is appended if the object is
+stringified.  To loosely emulate C<die> and provide a simple filename and line
+number, use the C<< failure->line_trace >> class method:
 
     failure::foo::bar->throw({
         msg => "Ouch!",
         trace => failure->line_trace,
     });
 
-    # Caught failure::foo::bar error: Ouch!
+    # Caught failure::foo::bar: Ouch!
     #
     # Failure caught at <FILENAME> line <NUMBER>
 
@@ -233,7 +238,7 @@ use the C<croak_trace> or C<confess_trace> class methods:
         trace => failure->croak_trace,
     });
 
-    # Caught failure::foo::bar error: Ouch!
+    # Caught failure::foo::bar: Ouch!
     #
     # Failure caught at <CALLING-FILENAME> line <NUMBER>
 
@@ -242,7 +247,7 @@ use the C<croak_trace> or C<confess_trace> class methods:
         trace => failure->confess_trace,
     });
 
-    # Caught failure::foo::bar error: Ouch!
+    # Caught failure::foo::bar: Ouch!
     #
     # Failure caught at <FILENAME> line <NUMBER>
     #   [confess stack trace continues]
@@ -255,7 +260,7 @@ like L<Devel::StackTrace>:
         trace => Devel::StackTrace->new,
     });
 
-    # Caught failure::foo::bar error: Ouch!
+    # Caught failure::foo::bar: Ouch!
     #
     # [stringified Devel::StackTrace object]
 
@@ -287,6 +292,8 @@ If you need to rethrow the exception, just use C<die>:
 =head2 Overriding failure class behavior
 
 See L<custom::failures>.
+
+=for Pod::Coverage throw message as_string
 
 =head1 SEE ALSO
 
