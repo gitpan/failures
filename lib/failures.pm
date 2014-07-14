@@ -4,7 +4,7 @@ use warnings;
 
 package failures;
 # ABSTRACT: Minimalist exception hierarchy generator
-our $VERSION = '0.003'; # VERSION
+our $VERSION = '0.004'; # VERSION
 
 sub import {
     no strict 'refs';
@@ -88,7 +88,7 @@ failures - Minimalist exception hierarchy generator
 
 =head1 VERSION
 
-version 0.003
+version 0.004
 
 =head1 SYNOPSIS
 
@@ -394,6 +394,10 @@ L<https://github.com/dagolden/failures>
 =head1 AUTHOR
 
 David Golden <dagolden@cpan.org>
+
+=head1 CONTRIBUTOR
+
+Michael Jemmeson <mjemmeson@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 

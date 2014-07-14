@@ -4,7 +4,7 @@ use warnings;
 
 package custom::failures;
 # ABSTRACT: Minimalist, customized exception hierarchy generator
-our $VERSION = '0.003'; # VERSION
+our $VERSION = '0.004'; # VERSION
 
 use parent 'failures';
 
@@ -25,7 +25,7 @@ custom::failures - Minimalist, customized exception hierarchy generator
 
 =head1 VERSION
 
-version 0.003
+version 0.004
 
 =head1 SYNOPSIS
 
@@ -84,7 +84,7 @@ denote 'is-a' relationships):
 
 Alternatively, if you want a different namespace for the hierarchy, do it this way:
 
-    use custom::failures 'MyApp::Error' => [ 'io::file' ];
+    use custom::failures 'MyApp::Error' => [ 'foo::bar' ];
 
 That will create the following classes and relationships:
 
@@ -99,6 +99,7 @@ That will create the following classes and relationships:
 By having custom classes also inherit from a standard namespace, you can throw
 a custom error class that will still be caught in the standard namespace:
 
+    use Safe::Isa; # for $_isa
     try {
         MyApp::failure::foo::bar->throw;
     }
